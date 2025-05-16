@@ -16,9 +16,7 @@ It’s a great tool for students, developers, and educators to understand how al
 
 ## Demo
 
-![Demo GIF or Screenshot](link-to-demo-image-or-gif)
-
-Try it live at: [https://your-gh-pages-url-or-demo-link.com](https://your-gh-pages-url-or-demo-link.com)
+Try it live at: [https://ipankajparihar.github.io/algo-visualizer/](https://ipankajparihar.github.io/algo-visualizer/)
 
 ---
 
