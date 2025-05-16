@@ -1,0 +1,110 @@
+<div (click)="redirectToDashboard()" class="cursor-pointer">
+  <i class="bi bi-arrow-left font-bold text-black"></i> Previous
+</div>
+<div
+  class="grid justify-center items-center grid-cols-1 md:grid-cols-[30vw_1fr] h-[90vh]"
+>
+  <div
+    class="justify-center items-center grid grid-rows-[10vh_1fr] gap-4 h-full p-4"
+  >
+    <!-- Algo Selector Dropdown -->
+    <app-dropdown
+      [options]="sortingOptions"
+      placeholder="Select Sorting Algorithm"
+      (selected)="handleSelectAlgo($event)"
+    ></app-dropdown>
+
+    <!-- Algo Detail Card -->
+
+    <app-details-card
+      [cardHeading]="selectedAlgo"
+      [cardDetail]="selectedAlgoDetail"
+      class="items-center"
+    ></app-details-card>
+  </div>
+
+  <div class="grid grid-rows-[10vh_1fr] gap-4 h-full p-4">
+    <!-- Histogram Action Controller -->
+    <div class="grid grid-cols-4 gap-20 items-center">
+      <!-- generate random histogram -->
+      <button
+        type="button"
+        (click)="generateRandomHistogram()"
+        [disabled]="isSorting"
+        [ngClass]="{
+          'bg-violet-400 text-white font-semibold rounded-md p-2 max-w-[10vw] hover:bg-violet-600 cursor-pointer': true,
+          'bg-violet-200 pointer-events-none opacity-50': isSorting
+        }"
+      >
+        Generate
+      </button>
+
+      <!-- handle count of histogram blocks -->
+
+      <div class="w-full max-w-md mx-auto">
+        <label for="slider" class="block font-medium text-gray-700 mb-2">
+          Number of Blocks
+          <span class="font-bold text-gray-600">{{ defaultHistogramBar }}</span>
+        </label>
+        <input
+          id="slider"
+          type="range"
+          min="20"
+          max="200"
+          (input)="handleHistogramBarsCount($event)"
+          [disabled]="isSorting"
+          class="w-40 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-violet-400"
+        />
+      </div>
+
+      <!-- handle speed of algorithm -->
+
+      <div class="w-full max-w-md mx-auto">
+        <label for="slider1" class="block font-medium text-gray-700 mb-2">
+          Execution Speed
+        </label>
+        <input
+          id="slider1"
+          type="range"
+          min="10"
+          max="100"
+          (input)="handleExecutionSpeed($event)"
+          class="w-40 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-violet-400"
+        />
+      </div>
+
+      <!-- Sort button -->
+      <button
+        type="button"
+        (click)="handleSort()"
+        [disabled]="isSorting"
+        [ngClass]="{
+          'bg-violet-400 text-white font-semibold rounded-md p-2 max-w-[10vw] hover:bg-violet-600 cursor-pointer': true,
+          'bg-violet-200 pointer-events-none opacity-50': isSorting
+        }"
+      >
+        Sort
+      </button>
+    </div>
+
+    <!-- Histogram Card -->
+    <div
+      class="bg-gray-100 rounded-md flex items-end justify-center border-dashed border-2 border-gray-400 p-1"
+    >
+      <div
+        *ngIf="!isHistogramGenerated"
+        class="flex justify-center items-center h-full text-2xl text-gray-400 font-bold"
+      >
+        Generate Histogram
+      </div>
+      <div
+        *ngFor="let block of histogramData; let i = index"
+        class="bg-violet-200 bar"
+        [style.height.%]="block"
+        style="flex: 1"
+        [class.current]="i === currentIndex"
+        [class.compare]="i === compareIndex"
+      ></div>
+    </div>
+  </div>
+</div>

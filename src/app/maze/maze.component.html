@@ -1,0 +1,136 @@
+<div (click)="redirectToDashboard()" class="cursor-pointer">
+  <i class="bi bi-arrow-left font-bold text-black"></i> Previous
+</div>
+<div
+  class="grid justify-center items-center grid-cols-1 md:grid-cols-[30vw_1fr] h-[90vh]"
+>
+  <div
+    class="justify-center items-center grid grid-rows-[10vh_1fr] gap-4 h-full p-4"
+  >
+    <!-- Algo Selector Dropdown -->
+    <app-dropdown
+      [options]="finingAlgoOptions"
+      placeholder="Select Searching Algorithm"
+      (selected)="handleSelectAlgo($event)"
+    ></app-dropdown>
+
+    <!-- Algo Detail Card -->
+
+    <app-details-card
+      [cardHeading]="selectedAlgo"
+      [cardDetail]="selectedAlgoDetail"
+      class="items-center"
+    ></app-details-card>
+  </div>
+
+  <div class="grid grid-rows-[10vh_1fr] gap-4 h-full p-4">
+    <!-- Maze Action Controller -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-20 items-center">
+      <!-- handle rows count -->
+
+      <div class="w-full max-w-md mx-auto">
+        <label for="slider" class="block font-medium text-gray-700 mb-2">
+          Number of rows
+          <span class="font-bold text-gray-600">{{ rows }}</span>
+        </label>
+        <input
+          id="slider"
+          type="range"
+          min="20"
+          max="60"
+          (input)="handleMazeRowsCount($event)"
+          [disabled]="isSorting"
+          class="w-40 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-violet-400"
+        />
+      </div>
+      <!-- generate random maze -->
+      <button
+        type="button"
+        (click)="generateMaze()"
+        [disabled]="isSorting"
+        [ngClass]="{
+          'bg-violet-400 text-white font-semibold rounded-md p-2 max-w-[10vw] hover:bg-violet-600 cursor-pointer': true,
+          'bg-violet-200 pointer-events-none opacity-50': isSorting
+        }"
+      >
+        Generate
+      </button>
+
+      <button
+        [disabled]="isSorting"
+        (click)="resetSelection()"
+        [ngClass]="{
+          'bg-violet-400 text-white font-semibold rounded-md p-2 max-w-[10vw] hover:bg-violet-600 cursor-pointer': true,
+          'bg-violet-200 pointer-events-none opacity-50': isSorting
+        }"
+      >
+        Reset Start & Goal
+      </button>
+      <button
+        (click)="startPathfinding()"
+        [disabled]="!start || !goal || isSorting"
+        [ngClass]="{
+          'bg-violet-400 text-white font-semibold rounded-md p-2 max-w-[20vw] md:max-w-[10vw] hover:bg-violet-600 cursor-pointer': true,
+          'bg-violet-200 pointer-events-none opacity-50': isSorting
+        }"
+      >
+        Start Pathfinding
+      </button>
+    </div>
+
+    <!-- Maze Card -->
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div
+        class="bg-gray-100 rounded-md flex items-end justify-center border-dashed border-2 border-gray-400 p-1 w-[70vw] h-[70vw] md:w-[70vh] md:h-[70vh] md:min-h-[600px]"
+      >
+        <div class="maze-grid">
+          <div
+            *ngIf="!isMazeGenerated"
+            class="flex justify-center items-center h-full text-2xl text-gray-400 font-bold"
+          >
+            Generate Maze
+          </div>
+          <div *ngFor="let row of maze; let i = index" class="maze-row">
+            <div
+              *ngFor="let cell of row; let j = index"
+              class="maze-cell"
+              [ngClass]="{
+                wall: cell === 'wall',
+                path: cell === 'path',
+                visited: cell === 'visited',
+                'path-to-goal': cell === 'path-to-goal',
+                start: isStart(i, j),
+                goal: isGoal(i, j)
+              }"
+              (click)="handleCellClick(i, j)"
+            ></div>
+          </div>
+        </div>
+      </div>
+      <!-- Instructions Block - move this inside the right column of maze layout -->
+      <div
+        class="flex justify-end items-start md:items-center h-[15vh] w-full md:w-auto px-4"
+      >
+        <div
+          *ngIf="selectionMode === 'start' && isMazeGenerated"
+          class="maze-tip text-sm md:text-base text-gray-800 bg-yellow-100 border border-yellow-300 p-2 rounded-md max-w-xs"
+        >
+          🟢 Click on a path cell to select the <strong>Start</strong> position.
+        </div>
+        <div
+          *ngIf="selectionMode === 'goal'"
+          class="maze-tip text-sm md:text-base text-gray-800 bg-red-100 border border-red-300 p-2 rounded-md max-w-xs"
+        >
+          🔴 Now, click on a path cell to select the
+          <strong>Goal</strong> position.
+        </div>
+        <div
+          *ngIf="!selectionMode && isMazeGenerated && start && goal"
+          class="maze-tip text-sm md:text-base text-gray-800 bg-blue-100 border border-blue-300 p-2 rounded-md max-w-xs"
+        >
+          🔍 Click on the <strong>Start Pathfinding</strong> button to begin.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
